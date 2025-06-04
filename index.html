@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciador de Humor - Neo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-brain pulse"></i>
+      </div>
+      <h1>Gerenciador de Humor dos Alunos</h1>
+      <p class="subtitulo">Projeto de POO – Neo Lucca</p>
+    </header>
+
+    <nav class="menu">
+      <button id="btnCadastro" class="active"><i class="fas fa-user-plus"></i> Cadastrar</button>
+      <button id="btnListagem"><i class="fas fa-list"></i> Listar</button>
+      <button id="btnEstatisticas"><i class="fas fa-chart-pie"></i> Estatísticas</button>
+    </nav>
+
+    <section id="cadastroSection" class="formulario secao-ativa">
+      <h2><i class="fas fa-user-edit"></i> Cadastro do Aluno</h2>
+      <form id="formAluno" onsubmit="controladorAluno.registrarAluno(event)">
+        <div class="input-group">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" placeholder="Ex: Lucca" required>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" placeholder="Ex: 17" min="5" max="100" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="turma">Turma:</label>
+            <select id="turma" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="1A">1° Ano A</option>
+              <option value="1B">1° Ano B</option>
+              <option value="2A">2° Ano A</option>
+              <option value="2B">2° Ano B</option>
+              <option value="3A">3° Ano A</option>
+              <option value="3B">3° Ano B</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="humor">Humor:</label>
+          <div class="humor-select">
+            <select id="humor" required>
+              <option value="feliz">😄 Feliz</option>
+              <option value="triste">😢 Triste</option>
+              <option value="estressado">😠 Estressado</option>
+              <option value="cansado">😴 Cansado</option>
+              <option value="ansioso">😰 Ansioso</option>
+              <option value="entediado">😐 Entediado</option>
+              <option value="motivado">💪 Motivado</option>
+              <option value="confiante">😎 Confiante</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="atividade">Atividade extra (opcional):</label>
+          <input type="text" id="atividade" placeholder="Ex: Teatro, Música...">
+        </div>
+
+        <div class="input-group">
+          <label for="observacao">Observações:</label>
+          <textarea id="observacao" placeholder="Alguma observação sobre o aluno..." rows="3"></textarea>
+        </div>
+
+        <div class="form-buttons">
+          <button type="reset" class="btn-secundario"><i class="fas fa-eraser"></i> Limpar</button>
+          <button type="submit" class="btn-primario"><i class="fas fa-save"></i> Registrar</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="listagemSection" class="alunos secao-inativa">
+      <div class="cabecalho-secao">
+        <h2><i class="fas fa-users"></i> Lista de Alunos</h2>
+        <div class="filtros">
+          <select id="filtroHumor">
+            <option value="todos">Todos os humores</option>
+            <option value="feliz">😄 Feliz</option>
+            <option value="triste">😢 Triste</option>
+            <option value="estressado">😠 Estressado</option>
+            <option value="cansado">😴 Cansado</option>
+            <option value="ansioso">😰 Ansioso</option>
+            <option value="entediado">😐 Entediado</option>
+            <option value="motivado">💪 Motivado</option>
+            <option value="confiante">😎 Confiante</option>
+          </select>
+          <select id="filtroTurma">
+            <option value="todas">Todas as turmas</option>
+            <option value="1A">1° Ano A</option>
+            <option value="1B">1° Ano B</option>
+            <option value="2A">2° Ano A</option>
+            <option value="2B">2° Ano B</option>
+            <option value="3A">3° Ano A</option>
+            <option value="3B">3° Ano B</option>
+          </select>
+          <button id="btnBusca" class="btn-pesquisa"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+      <div id="listaAlunos" class="cards"></div>
+      <div id="msgSemAlunos" class="mensagem-lista hidden">
+        <i class="fas fa-info-circle"></i> Nenhum aluno cadastrado ainda.
+      </div>
+    </section>
+
+    <section id="estatisticasSection" class="estatisticas secao-inativa">
+      <h2><i class="fas fa-chart-bar"></i> Estatísticas de Humor</h2>
+      
+      <div class="cards-estatisticas">
+        <div class="card-estatistica">
+          <h3>Total de Alunos</h3>
+          <p id="totalAlunos" class="numero-destaque">0</p>
+        </div>
+        
+        <div class="card-estatistica">
+          <h3>Humor Predominante</h3>
+          <p id="humorPredominante" class="humor-destaque">-</p>
+        </div>
+        
+        <div class="card-estatistica">
+          <h3>Média de Idade</h3>
+          <p id="mediaIdade" class="numero-destaque">0</p>
+        </div>
+      </div>
+      
+      <div class="grafico-container">
+        <h3>Distribuição de Humor</h3>
+        <div id="graficoHumor" class="grafico-barras"></div>
+      </div>
+      
+      <div class="resumo-turmas">
+        <h3>Resumo por Turmas</h3>
+        <table id="tabelaTurmas">
+          <thead>
+            <tr>
+              <th>Turma</th>
+              <th>Alunos</th>
+              <th>Humor Predominante</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dados serão inseridos via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="notificacao" class="notificacao">
+    <div class="notificacao-conteudo">
+      <i id="notificacaoIcone" class="fas fa-check-circle"></i>
+      <p id="notificacaoMensagem"></p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Neo Lucca | Projeto POO</p>
+      <div class="redes-sociais">
+        <a href="#" class="icone-social"><i class="fab fa-github"></i></a>
+        <a href="#" class="icone-social"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="icone-social"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
